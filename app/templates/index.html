@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Health App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Health App</h1>
+        <div id="goals">
+            <h2>Your Goals</h2>
+            <ul id="goal-list">
+                
+            </ul>
+        </div>
+        <button id="update-score" onclick="fetchNewGoal()">Get new goal</div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        const goalList = []
+        function fetchNewGoal() {
+            if (goalList.length >= 3) {
+                return;
+            }
+            fetch('/api/goals')
+                .then(response => response.json())
+                .then(data => {
+                    if (goalList.some(goal => goal.id === data.id)) {
+                        fetchNewGoal();
+                        return;
+                    }
+                    goalList.push(data);
+                    const container = document.getElementById('goal-list');
+                    const goal = document.createElement('li');
+                    const title = document.createElement('h3');
+                    const description = document.createElement('p');
+                    const units = document.createElement('p');
+                    
+                    const slider = document.createElement('div');
+                    slider.classList.add('progress-container');
+                    
+                    const progressBar = document.createElement('div');
+                    progressBar.classList.add('progress-bar');
+                    
+                    const progressText = document.createElement('span');
+                    progressText.classList.add('progress-text');
+                    
+                    const rangeMatch = data.range ? data.range.match(/(\d+\.?\d*)->(\d+\.?\d*)/) : null;
+                    const minValue = rangeMatch ? parseFloat(rangeMatch[1]) : 0;
+                    const maxValue = rangeMatch ? parseFloat(rangeMatch[2]) : 100;
+                    const step = data.step ? parseFloat(data.step) : 1;
+                    
+                    let currentValue = minValue;
+                    
+                    progressText.textContent = `${currentValue}/${maxValue} ${data.unit || ''}`;
+                    
+                    slider.appendChild(progressBar);
+                    slider.appendChild(progressText);
+                    
+                    const button = document.createElement('button');
+                    button.classList.add('contribute-button');
+                    button.textContent = 'Contribute';
+                    button.setAttribute('data-id', data.id);
+                    button.setAttribute('data-min', minValue);
+                    button.setAttribute('data-max', maxValue);
+                    button.setAttribute('data-unit', data.unit);
+                    button.setAttribute('data-step', step);
+                    button.setAttribute('data-current', currentValue);
+                    button.setAttribute('onClick', 'checkGoal(this)');
+                    
+                    title.textContent = data.title;
+                    description.textContent = data.description;
+                    
+                    goal.appendChild(title);
+                    goal.appendChild(description);
+                    goal.appendChild(button);
+                    goal.appendChild(slider);
+                    container.appendChild(goal);
+                });
+        }
+
+        function finishGoal(goalId) {
+            fetch('/api/goals', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    goalId: goalId,
+                    completed: true
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                });
+        }
+
+        function checkGoal(button) {
+            button.classList.toggle('contribute-button-clicked');
+            
+            const minValue = parseFloat(button.getAttribute('data-min'));
+            const maxValue = parseFloat(button.getAttribute('data-max'));
+            const step = parseFloat(button.getAttribute('data-step'));
+            let currentValue = parseFloat(button.getAttribute('data-current'));
+            
+            currentValue = Math.min(currentValue + step, maxValue);
+            
+            button.setAttribute('data-current', currentValue);
+            
+            const goalItem = button.closest('li');
+            const progressBar = goalItem.querySelector('.progress-bar');
+            const progressText = goalItem.querySelector('.progress-text');
+            
+            const percentage = ((currentValue - minValue) / (maxValue - minValue)) * 100;
+            progressBar.style.width = `${percentage}%`;
+            
+            const units = button.getAttribute('data-unit') || '';
+            progressText.textContent = `${currentValue.toFixed(1)}/${maxValue} ${units}`;
+            
+            if (currentValue >= maxValue) {
+                button.disabled = true;
+                button.textContent = 'Completed!';
+                finishGoal(button.getAttribute('data-id'));
+            }
+            
+            setTimeout(function() {
+                button.classList.remove('contribute-button-clicked');
+            }, 600);
+        }
+    </script>
+</body>
+</html>

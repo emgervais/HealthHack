@@ -1,0 +1,149 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.goal-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.goal-list li {
+    background: #e9ecef;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    list-style-type: none;
+}
+
+.contribute-button {
+    background: linear-gradient(to right, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contribute-button:hover {
+    background: linear-gradient(to right, #45a049, #3d8b40);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.contribute-button-clicked {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: button-spin-jump 0.5s ease forwards;
+}
+
+@keyframes button-spin-jump {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    20% {
+        transform: translateY(-8px) rotate(90deg);
+    }
+    40% {
+        transform: translateY(-12px) rotate(180deg);
+    }
+    60% {
+        transform: translateY(-8px) rotate(270deg);
+    }
+    80% {
+        transform: translateY(-4px) rotate(330deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    height: 20px;
+    margin: 10px 0;
+    position: relative;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #333;
+    font-size: 14px;
+  }
+  
+.contribute-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 8px;
+}
+
+.contribute-button:hover {
+  background-color: #45a049;
+}
+
+.contribute-button-clicked {
+  background-color: #388e3c;
+  transform: scale(0.95);
+}
+
+.contribute-button:disabled {
+  background-color: #78c57a;
+  cursor: default;
+}
